@@ -2,15 +2,15 @@
 //  RegisterView.swift
 //  NativeSimpleProject
 //
-//  Created by Neyasis on 16.07.2020.
+//  Created by Emre Vatansever on 16.07.2020.
 //  Copyright © 2020 Yok. All rights reserved.
 //
 
 import SwiftUI
 
 struct RegisterView: View {
-    @State var email = ""
-    @State var pass = ""
+    
+    @ObservedObject private var vmRegister = ViewModelRegister();
     
     var body: some View {
         ScrollView {
@@ -25,7 +25,7 @@ struct RegisterView: View {
                 HStack {
                    Image(systemName: "envelope")
                        .foregroundColor(.gray)
-                   TextField("Name Surname", text: $email)
+                   TextField("Name Surname", text: $vmRegister.email)
                }
                .padding(.all, 20)
                .background(Color.white)
@@ -35,7 +35,7 @@ struct RegisterView: View {
                 HStack {
                     Image(systemName: "envelope")
                         .foregroundColor(.gray)
-                    TextField("Email", text: $email)
+                    TextField("Email", text: $vmRegister.email)
                 }
                 .padding(.all, 20)
                 .background(Color.white)
@@ -46,7 +46,7 @@ struct RegisterView: View {
                 HStack {
                   Image(systemName: "lock")
                       .foregroundColor(.gray)
-                    SecureField("Password", text: $pass)
+                    SecureField("Password", text: $vmRegister.password)
                 }
                 .padding(.all, 20)
                 .background(Color.white)
@@ -54,7 +54,9 @@ struct RegisterView: View {
                 .padding(.horizontal, 20)
                 
                 
-                Button(action: {}) {
+                Button(action: {
+                    self.vmRegister.register()
+                }) {
                     Text("Login")
                         .foregroundColor(.white)
                         .font(.system(size: 24, weight: .medium))

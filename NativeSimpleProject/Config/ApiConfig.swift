@@ -2,7 +2,7 @@
 //  ApiConfig.swift
 //  NativeSimpleProject
 //
-//  Created by Neyasis on 19.07.2020.
+//  Created by Emre Vatansever on 19.07.2020.
 //  Copyright © 2020 Yok. All rights reserved.
 //
 

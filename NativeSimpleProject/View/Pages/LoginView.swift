@@ -2,12 +2,13 @@
 //  ContentView.swift
 //  NativeSimpleProject
 //
-//  Created by Neyasis on 15.07.2020.
+//  Created by Emre Vatansever on 15.07.2020.
 //  Copyright © 2020 Yok. All rights reserved.
 //
 
 import SwiftUI
 import SwiftyJSON
+import Combine
 
 struct Response: Codable {
     var results: [Result]
@@ -22,20 +23,8 @@ struct Result: Codable {
 
 struct LoginView: View {
     private var userService = UserService()
-    
-    @State var email = ""
-    @State var pass = ""
-    @State var areYouGoingToSecondView: Bool = true
-    
-    func UserMe() -> Void {
-        print("istek basladi")
-        userService.todos(parameters: nil) { (resp) in
-            let a = try! JSON(data: resp as! Data)
-             
-            print(a[0])
-        }
-    }
-    
+    @ObservedObject private var vmLogin = ViewModelLogin()
+      
     
     var body: some View {
         NavigationView{ // Step 1
@@ -51,7 +40,7 @@ struct LoginView: View {
                     HStack {
                         Image(systemName: "envelope")
                             .foregroundColor(.gray)
-                        TextField("Email", text: $email)
+                        TextField("Email", text: $vmLogin.email)
                     }
                     .padding(.all, 20)
                     .background(Color.white)
@@ -62,7 +51,7 @@ struct LoginView: View {
                     HStack {
                       Image(systemName: "lock")
                           .foregroundColor(.gray)
-                        SecureField("Password", text: $pass)
+                        SecureField("Password", text: $vmLogin.password)
                     }
                     .padding(.all, 20)
                     .background(Color.white)
@@ -70,7 +59,9 @@ struct LoginView: View {
                     .padding(.horizontal, 20)
                     
                     
-                    Button(action: {}) {
+                    Button(action: {
+                        self.vmLogin.login()
+                    }) {
                         Text("Login")
                             .foregroundColor(.white)
                             .font(.system(size: 24, weight: .medium))
@@ -82,10 +73,12 @@ struct LoginView: View {
                     .padding(.horizontal, 20)
 
                     
-                  NavigationLink(destination: RegisterView(), isActive: $areYouGoingToSecondView) { EmptyView() }
+                    NavigationLink(destination: RegisterView(), isActive: $vmLogin.areYouGoingToSecondView) { EmptyView() }
 
                   Button(action: {
-                        self.areYouGoingToSecondView = true // Step 4
+                        // self.areYouGoingToSecondView == true // Step 4
+                    self.vmLogin.areYouGoingToSecondView = true
+                        
                     }) {
                         Text("Do Something (Go To Second View)")
                         .font(.largeTitle)
@@ -100,7 +93,7 @@ struct LoginView: View {
             )
             .edgesIgnoringSafeArea(.all)
                 .onAppear {
-                    self.UserMe()
+                    
             }
         }
     }
