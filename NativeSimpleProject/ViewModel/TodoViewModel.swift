@@ -7,11 +7,13 @@
 //
 
 import Foundation
+import Combine
 
-protocol TodoViewDelegate: class {
+protocol TodoViewDelegate: ObservableObject {
     func onAddTodoItem () -> ()
     func onDelete(todoId: String) ->  ()
     func onDone (todoId: String) -> ()
+    func getList() -> ()
 }
 
 protocol TodoViewPresentable {
@@ -24,8 +26,9 @@ class TodoViewModel: TodoViewPresentable {
     
     var newTodoItem: String?
     var items: [TodoItem] = []
-    
     let database: TodoDB
+    
+    private var disposables = Set<AnyCancellable>()
     
     init(database: TodoDB = FirestoreDatabase.shared) {
         self.database = database

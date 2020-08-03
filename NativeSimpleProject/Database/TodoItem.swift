@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct TodoItem: Codable {
+struct TodoItem: Codable, Hashable {
     let id: String
     let name: String
     var complated: Bool

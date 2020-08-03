@@ -73,7 +73,7 @@ struct LoginView: View {
                     .padding(.horizontal, 20)
 
                     
-                    NavigationLink(destination: RegisterView(), isActive: $vmLogin.areYouGoingToSecondView) { EmptyView() }
+                    NavigationLink(destination: TodoList(), isActive: $vmLogin.areYouGoingToSecondView) { EmptyView() }
 
                   Button(action: {
                         // self.areYouGoingToSecondView == true // Step 4
@@ -94,7 +94,7 @@ struct LoginView: View {
             .edgesIgnoringSafeArea(.all)
                 .onAppear {
                     
-            }
+                }
         }
     }
 }

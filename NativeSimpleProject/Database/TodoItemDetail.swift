@@ -6,7 +6,7 @@
 //  Copyright © 2020 Yok. All rights reserved.
 //
 
-struct TodoItemDetail: Codable {
+struct TodoItemDetail: Codable, Hashable {
     var userName: String
     var photoUrl: String
     

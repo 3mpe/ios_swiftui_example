@@ -22,6 +22,27 @@ class FirestoreDatabase  {
 }
 
 extension FirestoreDatabase: TodoDB {
+    func getList(completion: @escaping (Bool, [TodoItem]) -> Void) {
+        firebaseDb.collection(todoosCollections).getDocuments { (querySnap, err) in
+            if let error = err {
+              print("getList document error: \(error)")
+              completion(false, [])
+            } else {
+                var data = [TodoItem]()
+                for document in querySnap!.documents {
+                    let item = document.data()
+                    data.append(TodoItem(id: item["id"] as! String, name: item["name"] as! String, complated: (item["complated"] != nil)))
+                    print("\(document.documentID) => \(document.data())")
+                }
+                print("getList : \(data)")
+                completion(false, data)
+                
+            }
+        }
+    }
+    
+  
+    
     func add(usingTodoItem todoItem: TodoItem) -> Bool {
         do {
             let ref = try firebaseDb

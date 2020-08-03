@@ -9,6 +9,13 @@
 import Foundation
 
 extension TodoViewModel: TodoViewDelegate {
+    func getList() {
+        database.getList { (isOk, list) in
+            self.items = list
+            self.objectWillChange.send()
+        }
+    }
+    
     
     func onAddTodoItem() {
         guard let newValue = newTodoItem else {
@@ -17,19 +24,20 @@ extension TodoViewModel: TodoViewDelegate {
         }
        let success =  database.add(usingTodoItem: TodoItem(name: newValue))
         print("Todo item added \(success)")
+        getList()
     }
     
     func onDelete(todoId: String) {
         database.delete(usingId: todoId)
+        getList()
         print("Todo item removed")
     }
     
     func onDone(todoId: String) {
         var item = self.items.first(where: { $0.id == todoId })
         item!.complated = !item!.complated
-        
         database.update(usingTodoItem: item!)
-        
+        getList()
     }
     
     
