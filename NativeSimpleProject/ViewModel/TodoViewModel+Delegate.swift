@@ -22,22 +22,30 @@ extension TodoViewModel: TodoViewDelegate {
             print("new value empty")
             return
         }
-       let success =  database.add(usingTodoItem: TodoItem(name: newValue))
+        let success =  database.add(usingTodoItem: TodoItem(name: newValue))
         print("Todo item added \(success)")
         getList()
     }
     
     func onDelete(todoId: String) {
-        database.delete(usingId: todoId)
-        getList()
-        print("Todo item removed")
+        database.delete(usingId: todoId, completion: { status in
+            if status {
+                self.getList()
+            }
+        })
+        
+        
     }
     
     func onDone(todoId: String) {
         var item = self.items.first(where: { $0.id == todoId })
         item!.complated = !item!.complated
-        database.update(usingTodoItem: item!)
-        getList()
+        database.update(usingTodoItem: item!, completion: { status in
+            if status {
+                self.getList()
+            }
+        })
+        
     }
     
     

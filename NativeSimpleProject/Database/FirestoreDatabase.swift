@@ -31,7 +31,7 @@ extension FirestoreDatabase: TodoDB {
                 var data = [TodoItem]()
                 for document in querySnap!.documents {
                     let item = document.data()
-                    data.append(TodoItem(id: item["id"] as! String, name: item["name"] as! String, complated: (item["complated"] != nil)))
+                    data.append(TodoItem(id: item["id"] as! String, name: item["name"] as! String, complated: (item["complated"]) as! Bool ))
                     print("\(document.documentID) => \(document.data())")
                 }
                 print("getList : \(data)")
@@ -58,20 +58,23 @@ extension FirestoreDatabase: TodoDB {
         return true
     }
     
-    func update(usingTodoItem todoItem: TodoItem) {
+    func update(usingTodoItem todoItem: TodoItem, completion: @escaping (Bool) -> Void) {
         firebaseDb
             .collection(todoosCollections)
             .whereField("id", isEqualTo: todoItem.id)
             .getDocuments { (item, error) in
                 if let error = error {
                     print("Document error: \(error)")
+                    completion(false)
                 } else {
                     if let document = item?.documents.first {
                         do {
                             try document.reference.setData(from: todoItem)
+                            completion(true)
                         }
                         catch let error {
                             print("document read error \(error)")
+                            completion(false)
                         }
                         
                     }
@@ -79,22 +82,25 @@ extension FirestoreDatabase: TodoDB {
             }
     }
     
-    func delete(usingId id: String) {
+    func delete(usingId id: String, completion: @escaping (Bool) -> Void) {
         firebaseDb
             .collection(todoosCollections)
             .whereField("id", isEqualTo: id)
             .getDocuments { (item, error) in
                 if let error = error {
                     print("Document Error: \(error)")
+                    completion(false)
                 }
                 else {
                     if let document = item?.documents.first {
                         document.reference.delete { (error) in
                             if let error = error {
                                 print("Document delete Error: \(error)")
+                                completion(true)
                             }
                             else {
                                 print("Document deleted")
+                                completion(false)
                             }
                         }
                     }
